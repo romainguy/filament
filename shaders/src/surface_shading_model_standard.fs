@@ -86,20 +86,25 @@ vec3 diffuseLobe(const PixelParams pixel, float NoV, float NoL, float LoH) {
 
 /**
  * Evaluates lit materials with the standard shading model. This model comprises
- * of 2 BRDFs: an optional clear coat BRDF, and a regular surface BRDF.
+ * of up to 3 BRDFs layered on top of each other. From bottom to top:
  *
- * Surface BRDF
+ * 1. Surface BRDF
  * The surface BRDF uses a diffuse lobe and a specular lobe to render both
  * dielectrics and conductors. The specular lobe is based on the Cook-Torrance
  * micro-facet model (see surface_brdf.fs for more details). In addition, the specular
- * can be either isotropic or anisotropic.
+ * can be either isotropic or anisotropic. This BRDF is always present.
  *
- * Clear coat BRDF
+ * 2. Sheen BRDF
+ * The sheen BRDF uses a single specular lobe to render fuzz or cloth-like surfaces.
+ * This specular lobe is based on the cloth shading model and therefore reuses its
+ * distribution and visibility terms (see surface_brdf.fs). This BRDF is optional.
+ *
+ * 3. Clear coat BRDF
  * The clear coat BRDF simulates a transparent, absorbing dielectric layer on
  * top of the surface. Its IOR is set to 1.5 (polyutherane) to simplify
  * our computations. This BRDF only contains a specular lobe and while based
  * on the Cook-Torrance microfacet model, it uses cheaper terms than the surface
- * BRDF's specular lobe (see surface_brdf.fs).
+ * BRDF's specular lobe (see surface_brdf.fs). This BRDF is optional.
  */
 vec3 surfaceShading(const PixelParams pixel, const Light light, float occlusion) {
     vec3 h = normalize(shading_view + light.l);
