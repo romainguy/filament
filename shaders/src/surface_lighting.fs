@@ -33,6 +33,10 @@ struct PixelParams {
     float clearCoatRoughness;
 #endif
 
+#if defined(MATERIAL_HAS_RETROREFLECTION)
+    float retroreflection;
+#endif
+
 #if defined(MATERIAL_HAS_SHEEN_COLOR)
     vec3  sheenColor;
 #if !defined(SHADING_MODEL_CLOTH)
@@ -79,7 +83,6 @@ float computeMicroShadowing(float NoL, float visibility) {
     float microShadow = saturate(NoL * aperture);
     return microShadow * microShadow;
 }
-
 
 /**
  * Returns the reflected vector at the current shading point. The reflected vector

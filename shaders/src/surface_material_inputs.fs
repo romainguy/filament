@@ -34,6 +34,12 @@ struct MaterialInputs {
     float anisotropy;
     vec3  anisotropyDirection;
 
+#if !defined(SHADING_MODEL_CLOTH) && !defined(SHADING_MODEL_SUBSURFACE) && !defined(SHADING_MODEL_UNLIT)
+#if defined(MATERIAL_HAS_RETROREFLECTION)
+    float retroreflection;
+#endif
+#endif
+
 #if defined(SHADING_MODEL_SUBSURFACE) || defined(MATERIAL_HAS_REFRACTION)
     float thickness;
 #endif

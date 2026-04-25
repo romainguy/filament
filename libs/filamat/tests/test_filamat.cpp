@@ -704,6 +704,24 @@ TEST_F(MaterialCompiler, StaticCodeAnalyzerShadowStrength) {
     EXPECT_TRUE(PropertyListsMatch(expected, properties));
 }
 
+TEST_F(MaterialCompiler, StaticCodeAnalyzerRetroReflection) {
+    std::string fragmentCode(R"(
+        void material(inout MaterialInputs material) {
+            prepareMaterial(material);
+            material.retroreflection = 1.0;
+        }
+    )");
+
+    std::string shaderCode = shaderWithAllProperties(ShaderStage::FRAGMENT, fragmentCode);
+
+    GLSLTools glslTools;
+    MaterialBuilder::PropertyList properties{ false };
+    glslTools.findProperties(ShaderStage::FRAGMENT, shaderCode, properties);
+    MaterialBuilder::PropertyList expected{ false };
+    expected[size_t(filamat::MaterialBuilder::Property::RETROREFLECTION)] = true;
+    EXPECT_TRUE(PropertyListsMatch(expected, properties));
+}
+
 TEST_F(MaterialCompiler, StaticCodeAnalyzerOutputFactor) {
     const std::string fragmentCode(R"(
         void material(inout MaterialInputs material) {
